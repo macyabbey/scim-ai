@@ -1,0 +1,40 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Debug SCIM Server",
+            "request": "launch",
+            "mainClass": "com.scim.ai.server.Main",
+            "projectName": "server",
+            "env": {
+                "SERVER_PORT": "8080"
+            }
+        },
+        {
+            "type": "java",
+            "name": "Debug Current Test File",
+            "request": "launch",
+            "mainClass": "",
+            "vmArgs": "-ea -Xmx512M",
+            "args": "",
+            "console": "internalConsole"
+        },
+        {
+            "type": "java",
+            "name": "Remote Debug",
+            "request": "attach",
+            "hostName": "localhost",
+            "port": 5005
+        }
+    ],
+    "compounds": [
+        {
+            "name": "Server + Remote Debug",
+            "configurations": [
+                "SCIM Server",
+                "Remote Debug"
+            ]
+        }
+    ]
+}

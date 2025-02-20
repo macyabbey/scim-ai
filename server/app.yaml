@@ -1,0 +1,41 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: scim-ai-server
+  labels:
+    app: scim-ai-server
+spec:
+  type: NodePort
+  selector:
+    app: scim-ai-server
+  ports:
+  - port: 8080
+    targetPort: 8080
+    name: http
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: scim-ai-server
+  labels:
+    app: scim-ai-server
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: scim-ai-server
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: scim-ai-server
+        version: v1
+    spec:
+      containers:
+        - name: scim-ai-server
+          image: scim-ai-server
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080

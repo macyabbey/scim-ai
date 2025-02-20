@@ -1,0 +1,58 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build",
+            "type": "shell",
+            "command": "./gradlew build",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "Test",
+            "type": "shell",
+            "command": "./gradlew test",
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "Run Server",
+            "type": "shell",
+            "command": "./gradlew run",
+            "isBackground": true,
+            "problemMatcher": {
+                "pattern": {
+                    "regexp": "^\\[ERROR\\]\\s+(.*)$",
+                    "message": 1
+                },
+                "background": {
+                    "activeOnStart": true,
+                    "beginsPattern": "^> Task :run$",
+                    "endsPattern": "^Server started at: http://localhost:"
+                }
+            }
+        },
+        {
+            "label": "Build Native Image",
+            "type": "shell",
+            "command": "./gradlew nativeCompile",
+            "group": "build"
+        },
+        {
+            "label": "Clean",
+            "type": "shell",
+            "command": "./gradlew clean",
+            "group": "build"
+        },
+        {
+            "label": "Generate Test Report",
+            "type": "shell",
+            "command": "./gradlew jacocoTestReport",
+            "group": "test"
+        }
+    ]
+} 

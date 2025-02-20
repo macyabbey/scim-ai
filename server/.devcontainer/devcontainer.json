@@ -1,0 +1,52 @@
+{
+    "name": "SCIM Server Development",
+    "image": "mcr.microsoft.com/devcontainers/java:21",
+    "features": {
+        "ghcr.io/devcontainers/features/java:1": {
+            "version": "21",
+            "installMaven": "true",
+            "installGradle": false
+        },
+        "ghcr.io/devcontainers/features/git:1": {},
+        "ghcr.io/devcontainers/features/github-cli:1": {}
+    },
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "vscjava.vscode-java-pack",
+                "vscjava.vscode-gradle",
+                "redhat.java",
+                "vscjava.vscode-java-debug",
+                "vscjava.vscode-java-test",
+                "vscjava.vscode-java-dependency",
+                "richardwillis.vscode-gradle-extension-pack",
+                "eamodio.gitlens",
+                "ryanluker.vscode-coverage-gutters",
+                "ms-azuretools.vscode-docker",
+                "streetsidesoftware.code-spell-checker",
+                "shengchen.vscode-checkstyle",
+                "vscjava.vscode-lombok"
+            ],
+            "settings": {
+                "java.configuration.updateBuildConfiguration": "automatic",
+                "java.compile.nullAnalysis.mode": "automatic",
+                "java.format.settings.url": ".vscode/java-formatter.xml",
+                "editor.formatOnSave": true,
+                "editor.formatOnPaste": true,
+                "files.trimTrailingWhitespace": true,
+                "java.test.config": {
+                    "vmargs": [
+                        "-Xmx512M"
+                    ]
+                },
+                "coverage-gutters.showLineCoverage": true,
+                "java.checkstyle.configuration": ".vscode/google_checks.xml"
+            }
+        }
+    },
+    "forwardPorts": [
+        8080
+    ],
+    "postCreateCommand": "mvn package",
+    "remoteUser": "vscode",
+}

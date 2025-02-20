@@ -1,0 +1,39 @@
+# .env files with secrets
+.env
+
+# Gradle
+.gradle/
+build/
+
+# IDE files
+.idea/
+*.iml
+.project
+.classpath
+.settings/
+
+# GraalVM native image
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Logs
+*.log
+
+hs_err_pid*
+target/
+.DS_Store
+.idea/
+*.iws
+*.ipr
+*.iml
+atlassian-ide-plugin.xml
+nbactions.xml
+nb-configuration.xml
+.settings
+.settings/
+.project
+.classpath
+*.swp
+*~
