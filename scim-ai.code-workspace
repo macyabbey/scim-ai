@@ -1,0 +1,28 @@
+{
+	"folders": [
+		{
+			"path": "examples"
+		},
+		{
+			"path": "agent"
+		},
+		{
+			"path": "server"
+		},
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"java.project.sourcePaths": [
+			"server/src"
+		],
+		"java.project.outputPath": "server/target",
+	},
+	"extensions": {
+		"recommendations": [
+			"ms-python.python",
+			"vscjava.vscode-java-pack"
+		]
+	}
+}
