@@ -1,0 +1,71 @@
+version: '3.8'
+
+services:
+  # DB to host example application schemas for testing sql connection agents
+  postgres-db:
+    build: 
+      context: ./
+      dockerfile: ./postgres/Dockerfile
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: vanilla_ecommerce
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    user: postgres
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d vanilla_ecommerce -U postgres"]
+      interval: 1s
+      timeout: 5s
+      retries: 10
+
+  # postgres admin ui for development purposes
+  pgadmin:
+    build:
+      context: ./
+      dockerfile: ./pgadmin/Dockerfile
+    environment:
+      PGADMIN_DEFAULT_EMAIL: test@test.com
+      PGADMIN_DEFAULT_PASSWORD: test
+    ports:
+      - "8081:80"
+      - "4043:443"
+    depends_on:
+      postgres-db:
+        condition: service_healthy  
+
+  # Pheonix AI agent observability platform for development purposes
+  # https://github.com/Arize-ai/phoenix
+  # https://huggingface.co/docs/smolagents/tutorials/inspect_runs
+  pheonix:
+    image: arizephoenix/phoenix:latest
+    ports:
+      # https://github.com/Arize-ai/phoenix/blob/65aa1e3456129df14c1b5b08d08f63f7ffcb09b1/Dockerfile#L67
+      # pheonix ui
+      - 6006:6006
+      # pheonix grpc
+      - 4317:4317
+      # pheonix prometheus
+      - 9090:9090
+      
+  # runs scim AI agent
+  
+  # runs scim Server
+      
+#  vanilla-ecommerce:
+#    image: vanilla-ecommerce:latest
+#    depends_on:
+#      - db
+#    environment:
+#      DB_HOST: db
+#      DB_PORT: 5432
+#      DB_USER: postgres
+#      DB_PASSWORD: postgres
+#      DB_NAME: vanilla_ecommerce
+#    ports:
+#      - "8080:8080"
+
+volumes:
+  db_data:
