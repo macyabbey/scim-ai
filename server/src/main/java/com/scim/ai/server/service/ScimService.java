@@ -19,7 +19,8 @@ import java.util.stream.Collectors;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import com.scim.ai.server.service.ConnectedDBService;
+import com.scim.ai.server.service.ConnectedUserDBService;
+import com.scim.ai.server.service.ConnectedGroupDBService;
 import com.scim.ai.server.service.ConnectedDbListResult;
 
 @ApplicationScoped
@@ -31,7 +32,7 @@ public class ScimService {
     @Inject
     public ScimService(
             ConnectedUserDBService connectedUserDb,
-            ConnectedGroupService connectedGroupDb) {
+            ConnectedGroupDBService connectedGroupDb) {
         this.connectedUserDb = connectedUserDb;
         this.connectedGroupDb = connectedGroupDb;
     }

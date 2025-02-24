@@ -67,6 +67,8 @@
             <artifactId>helidon-microprofile-testing-junit5</artifactId>
             <scope>test</scope>
         </dependency>
+        <!-- Start: https://helidon.io/docs/v4/mp/persistence -->
+        <!-- Start: https://helidon.io/docs/v4/mp/persistence#DS -->
         <dependency>
             <groupId>io.helidon.integrations.db</groupId>
             <artifactId>helidon-integrations-db-pgsql</artifactId>
@@ -80,6 +82,39 @@
             <artifactId>helidon-integrations-cdi-datasource-hikaricp</artifactId>
             <scope>runtime</scope>
         </dependency>
+        <!-- End: https://helidon.io/docs/v4/mp/persistence#DS -->
+        <!-- Start: https://helidon.io/docs/v4/mp/persistence#JTA -->
+        <dependency>
+            <groupId>jakarta.transaction</groupId>
+            <artifactId>jakarta.transaction-api</artifactId>
+            <version>2.0.1</version>
+            <scope>compile</scope> 
+        </dependency>
+        <dependency>
+            <groupId>io.helidon.integrations.cdi</groupId>
+            <artifactId>helidon-integrations-cdi-jta-weld</artifactId>
+            <scope>runtime</scope> 
+        </dependency>
+        <!-- End: https://helidon.io/docs/v4/mp/persistence#JTA -->
+        <!-- Start: https://helidon.io/docs/v4/mp/persistence#JPA -->
+        <dependency>
+            <groupId>jakarta.persistence</groupId>
+            <artifactId>jakarta.persistence-api</artifactId>
+            <version>3.1.0</version>
+            <scope>compile</scope> 
+        </dependency>
+        <dependency>
+            <groupId>io.helidon.integrations.cdi</groupId>
+            <artifactId>helidon-integrations-cdi-jpa</artifactId>
+            <scope>runtime</scope> 
+        </dependency>
+        <dependency>
+            <groupId>io.helidon.integrations.cdi</groupId>
+            <artifactId>helidon-integrations-cdi-hibernate</artifactId>
+            <scope>runtime</scope> 
+        </dependency>
+        <!-- End: https://helidon.io/docs/v4/mp/persistence#JPA -->
+        <!-- End: https://helidon.io/docs/v4/mp/persistence -->
     </dependencies>
 
     <build>
@@ -102,6 +137,53 @@
                     </execution>
                 </executions>
             </plugin>
+            <!-- Start: https://helidon.io/docs/v4/mp/persistence#JPA-MetaModel -->
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>default-compile</id>
+                        <configuration>
+                            <annotationProcessorPaths>
+                                <annotationProcessorPath>
+                                    <groupId>org.hibernate.orm</groupId>
+                                    <artifactId>hibernate-jpamodelgen</artifactId> 
+                                    <version>${version.lib.hibernate}</version> 
+                                </annotationProcessorPath>
+                            </annotationProcessorPaths>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.hibernate.orm.tooling</groupId>
+                <artifactId>hibernate-enhance-maven-plugin</artifactId>
+                <!--
+                    Ideally, your plugin versions are managed via a
+                    <pluginManagement> element, which is why the <version> element
+                    is commented out below.  If, nevertheless, you opt for the
+                    explicit version, check
+                    https://search.maven.org/artifact/org.hibernate.orm/hibernate-enhance-maven-plugin
+                    for up-to-date versions, and make sure the version is the same
+                    as that of Hibernate ORM itself.
+                -->
+                <!-- <version>6.3.1.Final</version> -->
+                <executions>
+                    <execution>
+                        <id>Statically enhance JPA entities for Hibernate</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>enhance</goal>
+                        </goals>
+                        <configuration>
+                            <failOnError>true</failOnError>
+                            <enableDirtyTracking>true</enableDirtyTracking>
+                            <enableLazyInitialization>true</enableLazyInitialization>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- End: https://helidon.io/docs/v4/mp/persistence#JPA-MetaModel -->
         </plugins>
     </build>
 </project>
