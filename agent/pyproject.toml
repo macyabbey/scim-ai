@@ -5,6 +5,7 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "litellm>=1.61.13",
     "openinference-instrumentation-smolagents>=0.1.2",
     "opentelemetry-exporter-otlp>=1.29.0",
     "opentelemetry-sdk>=1.29.0",
@@ -13,7 +14,7 @@ dependencies = [
     "pytest>=8.3.4",
     "python-dotenv>=1.0.1",
     "scimaiagentsconnectionsql",
-    "scimaiagentsserver",
+    "scimaiagentsserverjava",
     "scimaicommon",
     "scimaitools",
     "smolagents>=1.7.0",
@@ -23,7 +24,7 @@ dependencies = [
 [tool.uv.workspace]
 members = [
     "libraries/agents/connection/sql", 
-    "libraries/agents/server", 
+    "libraries/agents/server/java", 
     "libraries/common", 
     "libraries/tools"
 ]
@@ -31,7 +32,7 @@ members = [
 [tool.uv.sources]
 scimaiagent = { workspace = true }
 scimaiagentsconnectionsql = { workspace = true }
-scimaiagentsserver = { workspace = true }
+scimaiagentsserverjava = { workspace = true }
 scimaicommon = { workspace = true }
 scimaitools = { workspace = true }
 
