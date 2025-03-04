@@ -1,12 +1,31 @@
-## Relevant SCIM 2.0 specifications
-
-- [Core Schema](https://datatracker.ietf.org/doc/html/rfc7643)
-- [Protocol](https://datatracker.ietf.org/doc/html/rfc7644)
-- [Definitions, Overview, Concepts, and Requirements](https://datatracker.ietf.org/doc/html/rfc7644)
 
 ## Relevant helidon MP v4 documentation
 
 - [Persistence](https://helidon.io/docs/v4/mp/persistence)
+
+## Hibernate tools
+
+- Maven project for generating JPA classes from existing DB entities: https://github.com/hibernate/hibernate-tools/tree/main/maven
+
+### Related commands
+
+Describe plugin and goals
+
+```bash
+mvn help:describe -Dplugin=org.hibernate.tool:hibernate-tools-maven
+```
+
+Help on generating JPA entities from schema
+
+```bash
+mvn org.hibernate.tool:hibernate-tools-maven:help -Ddetail=true -Dgoal=hbm2java
+```
+
+Building persistence entities
+
+```bash
+mvn clean generate-sources
+```
 
 ## TODOs
 

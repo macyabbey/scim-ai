@@ -137,6 +137,41 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.hibernate.tool</groupId>
+                <artifactId>hibernate-tools-maven</artifactId>
+                <version>${version.lib.hibernate}</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.hibernate.tool</groupId>
+                        <artifactId>hibernate-tools-orm</artifactId>
+                        <version>${version.lib.hibernate}</version>
+                    </dependency>
+                    <dependency>
+                        <!-- 
+                           See where parent helidon pom already declares the postgres version 
+                           https://github.com/helidon-io/helidon/blob/95af89efb622b90fe578cd2443c835ef2aa7afad/dependencies/pom.xml#L828C26-L828C40
+                        -->
+                        <groupId>org.postgresql</groupId>
+                        <artifactId>postgresql</artifactId>
+                        <version>${version.lib.postgresql}</version>
+                    </dependency>
+                </dependencies>
+                <executions>
+                    <execution>
+                        <id>entity-generation</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>hbm2java</goal>
+                        </goals>
+                        <configuration>
+                            <ejb3>true</ejb3>
+                            <jdk5>true</jdk5>
+                            <packageName>com.scim.ai.server.persistence.entities</packageName>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>      
             <!-- Start: https://helidon.io/docs/v4/mp/persistence#JPA-MetaModel -->
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
