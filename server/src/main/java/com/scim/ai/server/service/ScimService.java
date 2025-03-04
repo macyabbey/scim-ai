@@ -3,38 +3,34 @@ package com.scim.ai.server.service;
 import com.scim.ai.server.model.ScimUser;
 import com.scim.ai.server.model.ScimListResponse;
 import com.scim.ai.server.model.ScimGroup;
-import com.scim.ai.server.model.ScimGroup.Member;
 import com.scim.ai.server.model.ScimBulkRequest;
 import com.scim.ai.server.model.Meta;
 import com.scim.ai.server.model.ScimPatchOperation;
-import java.lang.reflect.Field;
 import java.time.Instant;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import com.scim.ai.server.service.ConnectedUserDBService;
-import com.scim.ai.server.service.ConnectedGroupDBService;
-import com.scim.ai.server.service.ConnectedDbListResult;
+import com.scim.ai.server.service.UserPersistenceService;
+import com.scim.ai.server.service.GroupPersistenceService;
+import com.scim.ai.server.service.PersistedListResult;
 
 @ApplicationScoped
 public class ScimService {
 
-    ConnectedUserDBService connectedUserDb;
-    ConnectedGroupDBService connectedGroupDb;
+    UserPersistenceService userPersistenceService;
+    GroupPersistenceService groupPersistenceService;
 
     @Inject
     public ScimService(
-            ConnectedUserDBService connectedUserDb,
-            ConnectedGroupDBService connectedGroupDb) {
-        this.connectedUserDb = connectedUserDb;
-        this.connectedGroupDb = connectedGroupDb;
+        UserPersistenceService userPersistenceService,
+        GroupPersistenceService groupPersistenceService) {
+        this.userPersistenceService = userPersistenceService;
+        this.groupPersistenceService = groupPersistenceService;
     }
 
     public ScimUser createUser(ScimUser user) {
@@ -49,16 +45,16 @@ public class ScimService {
         meta.setLocation("/scim/v2/Users/" + user.getId());
         user.setMeta(meta);
 
-        connectedUserDb.createUser(user);
+        userPersistenceService.createUser(user);
         return user;
     }
 
     public ScimUser getUser(String id) {
-        return connectedUserDb.getUser(id);
+        return userPersistenceService.getUser(id);
     }
 
     public ScimListResponse<ScimUser> listUsers(String filter, int startIndex, int count) {
-        ConnectedDbListResult result = connectedUserDb.listUsers(filter, startIndex, count);
+        PersistedListResult<ScimUser> result = userPersistenceService.listUsers(filter, startIndex, count);
 
         ScimListResponse<ScimUser> response = new ScimListResponse<>();
         response.setResources(result.results);
@@ -71,7 +67,7 @@ public class ScimService {
 
     public ScimUser updateUser(String id, ScimUser user) {
 
-        ScimUser existing = connectedUserDb.getUser(id);
+        ScimUser existing = userPersistenceService.getUser(id);
 
         // Update meta information
         Meta meta = existing.getMeta();
@@ -79,16 +75,16 @@ public class ScimService {
         meta.setVersion(String.valueOf(Integer.parseInt(meta.getVersion()) + 1));
         user.setMeta(meta);
 
-        connectedUserDb.replaceUser(id, user);
+        userPersistenceService.replaceUser(id, user);
         return user;
     }
 
     public ScimUser patchUser(String id, ScimPatchOperation patch) {
-        return connectedUserDb.patchUser(id, patch);
+        return userPersistenceService.patchUser(id, patch);
     }
 
     public boolean deleteUser(String id) {
-        return connectedUserDb.deleteUser(id);
+        return userPersistenceService.deleteUser(id);
     }
 
     public ScimGroup createGroup(ScimGroup group) {
@@ -102,27 +98,27 @@ public class ScimService {
         meta.setLocation("/scim/v2/Groups/" + group.getId());
         group.setMeta(meta);
 
-        return connectedGroupDb.createGroup(group);
+        return groupPersistenceService.createGroup(group);
     }
 
     public ScimGroup getGroup(String groupId) {
-        return connectedGroupDb.getGroup(groupId);
+        return groupPersistenceService.getGroup(groupId);
     }
 
     public ScimGroup replaceGroup(String groupId, ScimGroup newGroup) {
-        return connectedGroupDb.replaceGroup(groupId, newGroup);
+        return groupPersistenceService.replaceGroup(groupId, newGroup);
     }
 
     public boolean deleteGroup(String groupId) {
-        return connectedGroupDb.deleteGroup(groupId);
+        return groupPersistenceService.deleteGroup(groupId);
     }
 
     public ScimGroup patchGroup(String groupId, ScimPatchOperation patch) {
-        return connectedGroupDb.patchGroup(groupId, patch);
+        return groupPersistenceService.patchGroup(groupId, patch);
     }
 
     public ScimListResponse<ScimGroup> listGroups(String filter, int startIndex, int count) {
-        ConnectedDbListResult result = connectedGroupDb.listGroups(filter, startIndex, count);
+        PersistedListResult<ScimGroup> result = groupPersistenceService.listGroups(filter, startIndex, count);
 
         ScimListResponse<ScimGroup> response = new ScimListResponse<>();
         response.setResources(result.results);
