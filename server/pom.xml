@@ -159,6 +159,7 @@
                 </dependencies>
                 <executions>
                     <execution>
+                        <?m2e execute onConfiguration?>
                         <id>entity-generation</id>
                         <phase>generate-sources</phase>
                         <goals>
@@ -168,15 +169,16 @@
                             <ejb3>true</ejb3>
                             <jdk5>true</jdk5>
                             <packageName>com.scim.ai.server.persistence.entities</packageName>
+                            <outputDirectory>${project.build.directory}/generated-sources/jpa</outputDirectory>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>      
-            <!-- Start: https://helidon.io/docs/v4/mp/persistence#JPA-MetaModel -->
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <executions>
                     <execution>
+                        <?m2e execute onConfiguration?>
                         <id>default-compile</id>
                         <configuration>
                             <annotationProcessorPaths>
@@ -190,6 +192,8 @@
                     </execution>
                 </executions>
             </plugin>
+            <!-- Start: https://helidon.io/docs/v4/mp/persistence#JPA-MetaModel -->
+        
             <plugin>
                 <groupId>org.hibernate.orm.tooling</groupId>
                 <artifactId>hibernate-enhance-maven-plugin</artifactId>
@@ -205,6 +209,7 @@
                 <!-- <version>6.3.1.Final</version> -->
                 <executions>
                     <execution>
+                        <?m2e execute onConfiguration?>
                         <id>Statically enhance JPA entities for Hibernate</id>
                         <phase>compile</phase>
                         <goals>
@@ -219,6 +224,25 @@
                 </executions>
             </plugin>
             <!-- End: https://helidon.io/docs/v4/mp/persistence#JPA-MetaModel -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>3.6.0</version>
+                <executions>
+                    <execution>
+                        <?m2e execute onConfiguration?>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>${project.build.directory}/generated-sources/jpa</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 </project>
