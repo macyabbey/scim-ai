@@ -41,6 +41,12 @@ services:
   # https://huggingface.co/docs/smolagents/tutorials/inspect_runs
   pheonix:
     image: arizephoenix/phoenix:latest
+    depends_on:
+      postgres-db:
+        condition: service_healthy
+    environment:
+      # https://docs.arize.com/phoenix/deployment/configuration
+      PHOENIX_SQL_DATABASE_URL: postgresql://postgres:postgres@postgres-db:5432/pheonix_db
     ports:
       # https://github.com/Arize-ai/phoenix/blob/65aa1e3456129df14c1b5b08d08f63f7ffcb09b1/Dockerfile#L67
       # pheonix ui

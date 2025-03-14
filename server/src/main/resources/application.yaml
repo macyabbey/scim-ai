@@ -4,26 +4,9 @@ javax:
     DataSource:
       db:
         datasource:
-          #
-          # Oracle configuration
-          #
           url: "postgresql://localhost:5432/ecommerce_db"
           username: "postgres"
           password: "postgres"
-          #
-          # MySQL configuration
-          #
-      #    url: jdbc:mysql://127.0.0.1:3306/pokemon?useSSL=false
-      #    username: user
-      #    password: password
-      #    poolName: "mysql"
-          #
-          # H2 configuration
-          #
-      #    url: "jdbc:h2:tcp://localhost:9092/~test"
-      #    username: h2
-      #    password: "${EMPTY}"
-      #    poolName: h2
           initializationFailTimeout: -1
           connectionTimeout: 2000
           helidon:

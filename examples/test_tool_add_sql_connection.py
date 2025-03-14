@@ -1,3 +1,53 @@
+"""
+Test for the tool_add_sql_connection module that tests updating various configuration files
+for database connection.
+"""
+
+import os
+import tempfile
+import sys
+import pytest
+from pathlib import Path
+
+# Add the parent directory to the path so we can import the agent modules
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+from agent.tool_add_sql_connection import (
+    update_application_yaml,
+    update_root_pom_xml,
+    update_hibernate_properties,
+    update_persistence_xml
+)
+
+# Get real content from the provided files
+REAL_APPLICATION_YAML = """# filepath: scim-ai/server/src/main/resources/application.yaml
+# see README.md for details how to run databases in docker
+javax:
+  sql:
+    DataSource:
+      db:
+        datasource:
+          url: "postgresql://localhost:5432/ecommerce_db"
+          username: "postgres"
+          password: "postgres"
+          initializationFailTimeout: -1
+          connectionTimeout: 2000
+          helidon:
+            pool-metrics:
+              enabled: true
+              # name prefix defaults to "db.pool." - if you have more than one client within a JVM, you may want to distinguish between them
+              name-prefix: "hikari."
+        services:
+          tracing:
+            - enabled: true
+          metrics:
+            - type: TIMER
+        health-check:
+          type: "query"
+          statementName: "health-check"
+"""
+
+REAL_POM_XML = """<!-- filepath: scim-ai/server/pom.xml -->
 <?xml version="1.0" encoding="UTF-8"?>
 
 <project xmlns="http://maven.apache.org/POM/4.0.0"
@@ -16,57 +66,7 @@
     <name>Scim AI Server</name>
 
     <dependencies>
-        <dependency>
-            <groupId>io.helidon.microprofile.bundles</groupId>
-            <artifactId>helidon-microprofile-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.helidon.microprofile.openapi</groupId>
-            <artifactId>helidon-microprofile-openapi</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.helidon.microprofile.health</groupId>
-            <artifactId>helidon-microprofile-health</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.helidon.microprofile.metrics</groupId>
-            <artifactId>helidon-microprofile-metrics</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.helidon.logging</groupId>
-            <artifactId>helidon-logging-jul</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>jakarta.json.bind</groupId>
-            <artifactId>jakarta.json.bind-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.glassfish.jersey.media</groupId>
-            <artifactId>jersey-media-json-binding</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.smallrye</groupId>
-            <artifactId>jandex</artifactId>
-            <scope>runtime</scope>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-api</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.hamcrest</groupId>
-            <artifactId>hamcrest-all</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.helidon.microprofile.testing</groupId>
-            <artifactId>helidon-microprofile-testing-junit5</artifactId>
-            <scope>test</scope>
-        </dependency>
+        <!-- REMOVED SOME ACTUAL pom.xml content for testing -->
         <!-- Start: https://helidon.io/docs/v4/mp/persistence -->
         <!-- Start: https://helidon.io/docs/v4/mp/persistence#DS -->
         <dependency>
@@ -246,3 +246,137 @@
         </plugins>
     </build>
 </project>
+"""
+
+REAL_HIBERNATE_PROPERTIES = """hibernate.connection.driver_class=org.postgresql.Driver
+hibernate.connection.url=jdbc:postgresql://localhost:5432/ecommerce_db
+hibernate.connection.username=postgres
+hibernate.connection.password=postgres
+"""
+
+REAL_PERSISTENCE_XML = """<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="https://jakarta.ee/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence
+                                 https://jakarta.ee/xml/ns/persistence/persistence_3_1.xsd"
+             version="3.1">
+    <persistence-unit name="db" transaction-type="JTA">
+        <jta-data-source>db</jta-data-source>
+        <class>com.scim.ai.server.persistence.User</class>
+        <properties>
+            <property name="hibernate.column_ordering_strategy" value="legacy"/>
+            <!-- https://docs.jboss.org/hibernate/orm/6.3/dialect/dialect.html -->
+            <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
+        </properties>
+    </persistence-unit>
+</persistence>
+"""
+
+@pytest.fixture
+def temp_files():
+    """Create temporary files with real content for testing."""
+    temp_dir = tempfile.TemporaryDirectory()
+    
+    # Create temporary files with real content
+    app_yaml_path = os.path.join(temp_dir.name, "application.yaml")
+    with open(app_yaml_path, "w") as f:
+        f.write(REAL_APPLICATION_YAML)
+        
+    pom_xml_path = os.path.join(temp_dir.name, "pom.xml")
+    with open(pom_xml_path, "w") as f:
+        f.write(REAL_POM_XML)
+        
+    hibernate_properties_path = os.path.join(temp_dir.name, "hibernate.properties")
+    with open(hibernate_properties_path, "w") as f:
+        f.write(REAL_HIBERNATE_PROPERTIES)
+        
+    persistence_xml_path = os.path.join(temp_dir.name, "persistence.xml")
+    with open(persistence_xml_path, "w") as f:
+        f.write(REAL_PERSISTENCE_XML)
+    
+    yield {
+        "temp_dir": temp_dir,
+        "app_yaml_path": app_yaml_path,
+        "pom_xml_path": pom_xml_path,
+        "hibernate_properties_path": hibernate_properties_path,
+        "persistence_xml_path": persistence_xml_path
+    }
+    
+    temp_dir.cleanup()
+
+def test_update_application_yaml(temp_files):
+    """Test updating application.yaml with database configuration."""
+    db_config = {
+        "url": "jdbc:mysql://localhost:3306/testdb",
+        "username": "testuser",
+        "password": "testpass",
+        "driver": "com.mysql.cj.jdbc.Driver"
+    }
+    
+    result = update_application_yaml(temp_files["app_yaml_path"], db_config)
+    assert result is True
+    
+    # Read the updated file
+    with open(temp_files["app_yaml_path"], "r") as f:
+        updated_content = f.read()
+    
+    # Verify the content was updated correctly
+    assert "datasource" in updated_content
+    assert "jdbc:mysql://localhost:3306/testdb" in updated_content
+    assert "testuser" in updated_content
+    assert "testpass" in updated_content
+    assert "com.mysql.cj.jdbc.Driver" in updated_content
+
+def test_update_root_pom_xml(temp_files):
+    """Test updating root pom.xml with database dependencies."""
+    db_type = "mysql"
+    
+    result = update_root_pom_xml(temp_files["pom_xml_path"], db_type)
+    assert result is True
+    
+    # Read the updated file
+    with open(temp_files["pom_xml_path"], "r") as f:
+        updated_content = f.read()
+    
+    # Verify the content was updated correctly
+    assert "mysql-connector-java" in updated_content
+
+def test_update_hibernate_properties(temp_files):
+    """Test updating hibernate.properties with database configuration."""
+    db_config = {
+        "url": "jdbc:mysql://localhost:3306/testdb",
+        "username": "testuser",
+        "password": "testpass",
+        "driver": "com.mysql.cj.jdbc.Driver",
+        "dialect": "org.hibernate.dialect.MySQLDialect"
+    }
+    
+    result = update_hibernate_properties(temp_files["hibernate_properties_path"], db_config)
+    assert result is True
+    
+    # Read the updated file
+    with open(temp_files["hibernate_properties_path"], "r") as f:
+        updated_content = f.read()
+    
+    # Verify the content was updated correctly
+    assert "jdbc:mysql://localhost:3306/testdb" in updated_content
+    assert "testuser" in updated_content
+    assert "testpass" in updated_content
+    assert "com.mysql.cj.jdbc.Driver" in updated_content
+
+def test_update_persistence_xml(temp_files):
+    """Test updating persistence.xml with database configuration."""
+    db_config = {
+        "dialect": "org.hibernate.dialect.MySQLDialect"
+    }
+    
+    result = update_persistence_xml(temp_files["persistence_xml_path"], db_config)
+    assert result is True
+    
+    # Read the updated file
+    with open(temp_files["persistence_xml_path"], "r") as f:
+        updated_content = f.read()
+    
+    # Verify the content was updated correctly
+    assert "org.hibernate.dialect.MySQLDialect" in updated_content
+    assert "org.hibernate.dialect.PostgreSQLDialect" not in updated_content

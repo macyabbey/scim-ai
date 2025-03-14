@@ -1,5 +1,10 @@
 {
   "cSpell.words": [
     "scim"
-  ]
+  ],
+  "java.project.sourcePaths": [
+    "src/main/java",
+    "target/generated-sources/annotations",
+    "target/generated-sources/jpa"
+  ],
 }

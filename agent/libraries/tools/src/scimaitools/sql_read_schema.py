@@ -167,10 +167,10 @@ def get_table_metadata(
 # https://docs.sqlalchemy.org/en/21/core/reflection.html
 
 @tool
-def read_schema(database_connection_string: str) -> list[TableDescription]:
+def read_schema(database_connection_string: str) -> list[str]:
     """Read what schemas and tables are present in the database.
 
-    Returns a list of TableDescription objects.
+    Returns a json array of serialized TableDescription objects representing the tables in the database.
 
     Args:
         database_connection_string: A database connection string to read the schema from.
@@ -188,6 +188,6 @@ def read_schema(database_connection_string: str) -> list[TableDescription]:
                     columns=inspector.get_columns(table, schema),
                     foreign_keys=inspector.get_foreign_keys(table, schema),
                     primary_key=inspector.get_pk_constraint(table, schema),
-                ),
+                ).model_dump_json(),
             ])
     return output

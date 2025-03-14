@@ -9,5 +9,9 @@
         "vmargs": [
             "-Xmx512M"
         ]
-    }
+    },
+    "java.project.sourcePaths": [
+        "src/main",
+        "target/generated-sources/com/scim/ai/server/persistence/entities"
+    ],
 } 

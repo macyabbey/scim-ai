@@ -1,7 +1,6 @@
 package com.scim.ai.server.model;
 
 import java.util.List;
-import java.util.Map;
 
 public class ScimUser {
     private String id;

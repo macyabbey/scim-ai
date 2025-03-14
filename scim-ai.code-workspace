@@ -15,9 +15,12 @@
 	],
 	"settings": {
 		"java.project.sourcePaths": [
-			"server/src"
+			"server/src",
+			"server/target/generated-sources/annotations",
+			"server/target/generated-sources/jpa"
 		],
 		"java.project.outputPath": "server/target",
+		"java.configuration.updateBuildConfiguration": "interactive",
 	},
 	"extensions": {
 		"recommendations": [
