@@ -29,6 +29,7 @@ mvn clean generate-sources
 
 ## TODOs
 
+- Migrate as "template" within java-helidon agent
 - Proper authentication schemes
 - Robust filtering support
 - Reasonable schemas implementation

@@ -1,7 +1,8 @@
-package com.scim.ai.server.service;
+package com.scim.ai.server.persistence;
 
 import com.scim.ai.server.model.ScimGroup;
 import com.scim.ai.server.model.ScimPatchOperation;
+import com.scim.ai.server.service.PersistedListResult;
 
 public interface GroupPersistenceService {
 

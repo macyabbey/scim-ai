@@ -7,7 +7,6 @@
     <persistence-unit name="db" transaction-type="JTA">
         <jta-data-source>db</jta-data-source>
         <class>com.scim.ai.server.persistence.User</class>
-        <class>com.scim.ai.server.persistence.Profile</class>
         <properties>
             <property name="hibernate.column_ordering_strategy" value="legacy"/>
             <!-- https://docs.jboss.org/hibernate/orm/6.3/dialect/dialect.html -->

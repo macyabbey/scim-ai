@@ -1,6 +1,7 @@
-package com.scim.ai.server.service;
+package com.scim.ai.server.persistence;
 
 import com.scim.ai.server.model.ScimUser;
+import com.scim.ai.server.service.PersistedListResult;
 import com.scim.ai.server.model.ScimPatchOperation;
 
 public interface UserPersistenceService {

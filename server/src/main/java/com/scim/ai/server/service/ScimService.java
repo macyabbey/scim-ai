@@ -1,6 +1,8 @@
 package com.scim.ai.server.service;
 
 import com.scim.ai.server.model.ScimUser;
+import com.scim.ai.server.persistence.GroupPersistenceService;
+import com.scim.ai.server.persistence.UserPersistenceService;
 import com.scim.ai.server.model.ScimListResponse;
 import com.scim.ai.server.model.ScimGroup;
 import com.scim.ai.server.model.ScimBulkRequest;
@@ -15,8 +17,7 @@ import java.util.UUID;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import com.scim.ai.server.service.UserPersistenceService;
-import com.scim.ai.server.service.GroupPersistenceService;
+
 import com.scim.ai.server.service.PersistedListResult;
 
 @ApplicationScoped
